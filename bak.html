@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>IoT App</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
+    <script type="module" src="https://unpkg.com/@material/mwc-button@latest/mwc-button.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-slider@latest/mwc-slider.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-top-app-bar@latest/mwc-top-app-bar.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-icon-button@latest/mwc-icon-button.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-formfield@latest/mwc-formfield.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-switch@latest/mwc-switch.js?module"></script>
+    <style>
+        html {
+            height: 100%;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        mwc-slider {
+            --mdc-theme-secondary: rgb(255, 30, 0);
+            --mdc-theme-text-primary-on-dark: rgb(255, 255, 255);
+        }
+        
+        .content {
+            margin: 20px;
+        }
+        
+        .field {
+            margin: 10px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <mwc-top-app-bar dense>
+        <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
+        <div slot="title">物聯網儀表板</div>
+        <mwc-icon-button icon="public" slot="actionItems"></mwc-icon-button>
+        <div class="content">
+
+            <mwc-formfield label="Airplane mode">
+                <mwc-switch selected></mwc-switch>
+            </mwc-formfield>
+            <br>
+            <mwc-button id="myButton" label="Click Me!" raised style='padding:10px;width:30%'></mwc-button>
+            <br>
+            <div class='field'>
+                <label for='red' style='margin:20px'>Red </label>
+                <mwc-slider id='islider' name='red' style="width:60%" pin markers discrete withTickMarks step="1" min="0" max="100" value="10">
+                </mwc-slider>
+            </div>
+
+
+
+
+
+
+
+
+        </div>
+    </mwc-top-app-bar>
+
+
+    <script>
+        const button = document.querySelector('#myButton');
+        button.addEventListener('click', () => {
+            alert('You clicked!');
+        });
+        const islider = document.querySelector('#islider');
+        islider.addEventListener('input', function(e) {
+            console.log(islider.value)
+        })
+    </script>
+</body>
+
+</html>

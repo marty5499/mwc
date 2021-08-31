@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "@material/mwc-button": "^0.22.1",
+    "@material/mwc-slider": "^0.22.1",
+    "@webcomponents/webcomponentsjs": "^2.6.0"
+  },
+  "devDependencies": {
+    "@web/dev-server": "^0.1.22"
+  }
+}

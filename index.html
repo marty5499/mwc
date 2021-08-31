@@ -1,0 +1,181 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>IoT App</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Material+Icons&display=block" rel="stylesheet">
+    <script src="https://blocklypro.webduino.io/dist/lib/webduino-all-0.4.20.min.js?rev=4426739c00d85325cb2d3d701fa50666"></script>
+    <script src="https://blocklypro.webduino.io/node_modules/webduino-module-mqtt/mqttClient.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <script type="module" src="https://unpkg.com/@material/mwc-button@latest/mwc-button.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-slider@latest/mwc-slider.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-top-app-bar@latest/mwc-top-app-bar.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-icon-button@latest/mwc-icon-button.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-formfield@latest/mwc-formfield.js?module"></script>
+    <script type="module" src="https://unpkg.com/@material/mwc-switch@latest/mwc-switch.js?module"></script>
+    <style>
+        html {
+            height: 100%;
+            --mdc-typography-body2-spacing: 0.2em;
+            --mdc-typography-body2-font-size: 1em;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        mwc-formfield {
+            width: 100%;
+        }
+        
+        mwc-switch {
+            width: 78%;
+        }
+        
+        #red {
+            width: 78%;
+            --mdc-theme-secondary: rgb(255, 30, 0);
+            --mdc-theme-text-primary-on-dark: rgb(255, 255, 255);
+        }
+        
+        #green {
+            width: 78%;
+            --mdc-theme-secondary: rgb(30, 255, 0);
+            --mdc-theme-text-primary-on-dark: rgb(255, 255, 255);
+        }
+        
+        #blue {
+            width: 78%;
+            --mdc-theme-secondary: rgb(0, 30, 255);
+            --mdc-theme-text-primary-on-dark: rgb(255, 255, 255);
+        }
+        
+        .content {
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <mwc-top-app-bar dense>
+        <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
+        <div slot="title">物聯網儀表板</div>
+        <div class="content">
+            <div id="chart_div" style="width: 100px; height: 180px;"></div>
+            <mwc-formfield label="On/Off" alignEnd spaceBetween>
+                <mwc-switch selected></mwc-switch>
+            </mwc-formfield>
+            <br><br>
+            <mwc-formfield label="Red" alignEnd spaceBetween>
+                <mwc-slider id='red' name='red' pin markers discrete withTickMarks step="1" min="0" max="255" value="10">
+                </mwc-slider>
+            </mwc-formfield>
+            <mwc-formfield label="Green" alignEnd spaceBetween>
+                <mwc-slider id='green' name='green' pin markers discrete withTickMarks step="1" min="0" max="255" value="10">
+                </mwc-slider>
+            </mwc-formfield>
+            <mwc-formfield label="Blue" alignEnd spaceBetween>
+                <mwc-slider id='blue' name='blue' pin markers discrete withTickMarks step="1" min="0" max="255" value="10">
+                </mwc-slider>
+            </mwc-formfield>
+        </div>
+    </mwc-top-app-bar>
+
+    <script>
+        (async function() {
+            const bluered = document.querySelector('#red');
+            const green = document.querySelector('#green');
+            const blue = document.querySelector('#blue');
+            const sw = document.querySelector('mwc-switch');
+            sw.addEventListener('input', function(e) {
+                console.log("switch:", !sw.checked)
+                    webduinoBroadcastor.send({
+                        topic: 'sonoff_nVdWa',
+                        message: sw.checked?"off":"on"
+                    });
+            })
+            red.addEventListener('input', function(e) {
+                webduinoBroadcastor.send({
+                    topic: 'red5497',
+                    message: '' + red.value
+                });
+            })
+            green.addEventListener('input', function(e) {
+                webduinoBroadcastor.send({
+                    topic: 'green5497',
+                    message: '' + green.value
+                });
+            })
+            blue.addEventListener('input', function(e) {
+                webduinoBroadcastor.send({
+                    topic: 'blue5497',
+                    message: '' + blue.value
+                });
+            })
+
+            google.charts.load('current', {
+                'packages': ['gauge']
+            });
+            google.charts.setOnLoadCallback(drawChart);
+
+            var cfg = location.hash;
+            if (cfg.length > 1) {
+                cfg = JSON.parse(decodeURI(cfg.substring(1)))
+            } else {
+                cfg = {
+                    'gauge': 'temp5497'
+                }
+            }
+
+            var gaugeSubName = cfg['gauge'];
+            var data = null,
+                chart, options;
+
+            function drawChart() {
+                data = google.visualization.arrayToDataTable([
+                    ['Label', 'Value'],
+                    ['光度計', 0]
+                ]);
+                options = {
+                    width: 160,
+                    height: 160,
+                    redFrom: 700,
+                    redTo: 1000,
+                    yellowFrom: 500,
+                    yellowTo: 700,
+                    greenFrom: 150,
+                    greenTo: 500,
+                    min: 0,
+                    max: 1000,
+                    minorTicks: 5
+                };
+                chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }
+
+            var webduinoBroadcastor = new webduino.module.mqttClient();
+            await webduinoBroadcastor.connect();
+
+            // https://webbit.webduino.io/blockly/?demo=default#kRvQXjVLYGeyQ
+            await webduinoBroadcastor.onMessage(gaugeSubName, async(msg) => {
+                if (data == null) return
+                data.setValue(0, 1, parseInt(msg));
+                chart.draw(data, options);
+            });
+
+            webduinoBroadcastor = new webduino.module.mqttClient();
+            await webduinoBroadcastor.connect();
+
+        }());
+    </script>
+</body>
+
+</html>
