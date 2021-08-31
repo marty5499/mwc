@@ -73,7 +73,9 @@
         <mwc-icon-button icon="menu" slot="navigationIcon"></mwc-icon-button>
         <div slot="title">物聯網儀表板</div>
         <div class="content">
-            <div id="chart_div" style="width: 100px; height: 180px;"></div>
+            <div id="chart_div" style="width: 100px; height: 180px;padding-left: 10px;"></div>
+                <br><br><br><br><br><br><br><br>
+
             <mwc-formfield label="On/Off" alignEnd spaceBetween>
                 <mwc-switch selected></mwc-switch>
             </mwc-formfield>
@@ -149,8 +151,8 @@
                     ['光度計', 0]
                 ]);
                 options = {
-                    width: 160,
-                    height: 160,
+                    width: 320,
+                    height: 320,
                     redFrom: 700,
                     redTo: 1000,
                     yellowFrom: 500,
